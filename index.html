@@ -1,0 +1,1328 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNT · Séance 3 · Répéter pour créer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f3ec; --card:#fffdf8; --ink:#1d1b16; --ink2:#5b5648; --line:#e2dccd;
+  --accent:#2546d6; --accent-soft:#e6eafc; --bonus:#b4561d; --bonus-soft:#fbeadf;
+  --g:#2f8f5b; --o:#d9822b; --r:#c8402f; --ok:#2f8f5b; --err:#c8402f;
+  --code-bg:#1f2130; --code-ink:#e9e7f2;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --sans:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--sans)}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.88em;background:#ece7da;padding:.08em .35em;border-radius:4px}
+pre.ex-code{font-family:var(--mono);font-size:14px;background:#ece7da;padding:10px 14px;border-radius:8px;overflow-x:auto;line-height:1.5;margin:10px 0}
+
+/* ---------- En-tête ---------- */
+header.top{background:var(--ink);color:#f6f3ec;padding:22px 16px 0;position:relative;overflow:hidden}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+header.top .wrap{padding:0;position:relative}
+.kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+h1{font-family:var(--serif);font-weight:800;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:.2em 0 .3em}
+.headart{position:absolute;right:-6px;top:-8px;width:150px;height:150px;opacity:.5;pointer-events:none}
+@media (max-width:700px){.headart{display:none}}
+.pystatus{display:inline-flex;align-items:center;gap:8px;font-size:14px;background:#ffffff14;border-radius:99px;padding:4px 12px;margin-bottom:16px}
+.pystatus i{width:9px;height:9px;border-radius:50%;background:#d9a52b;display:inline-block}
+.pystatus.ready i{background:#4cc27f}.pystatus.fail i{background:#e8664f}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;position:relative}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{font:inherit;font-size:15px;color:#f6f3ecc0;background:transparent;border:0;padding:10px 14px;border-radius:10px 10px 0 0;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{color:#fff;background:#ffffff10}
+nav.tabs button[aria-selected=true]{background:var(--paper);color:var(--ink);font-weight:700}
+nav.tabs .badge{font-size:12px;margin-left:6px;padding:1px 7px;border-radius:99px;background:#ffffff22}
+nav.tabs button[aria-selected=true] .badge{background:var(--accent-soft);color:var(--accent)}
+nav.tabs button.bonus[aria-selected=true] .badge{background:var(--bonus-soft);color:var(--bonus)}
+
+main{padding:28px 0 80px}
+section.panel{display:none}
+section.panel.active{display:block}
+h2{font-family:var(--serif);font-weight:800;font-size:28px;line-height:1.2;margin:42px 0 10px}
+h2:first-child{margin-top:0}
+h3{font-size:19px;margin:0 0 6px}
+.lead{font-size:19px;color:var(--ink2)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0}
+.box.info{border-left:5px solid var(--accent)}
+.box.warn{border-left:5px solid var(--o)}
+.box.bonus{border-left:5px solid var(--bonus);background:var(--bonus-soft)}
+.box.art{border-left:5px solid var(--ink)}
+table{border-collapse:collapse;width:100%;margin:10px 0;background:var(--card);border-radius:10px;overflow:hidden;font-size:16px}
+th,td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#efeadf}
+.tblwrap{overflow-x:auto}
+
+/* niveaux */
+.lvl{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:99px;color:#fff;vertical-align:middle;margin-right:6px}
+.lvl.g{background:var(--g)}.lvl.o{background:var(--o)}.lvl.r{background:var(--r)}.lvl.k{background:var(--ink)}
+
+/* exercices */
+article.ex{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px 20px;margin:22px 0;position:relative}
+article.ex .exhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.state{font-size:13px;font-weight:700;border-radius:99px;padding:2px 10px;background:#eee8da;color:var(--ink2)}
+.state.ok{background:#dff1e6;color:var(--ok)}.state.err{background:#f7e0dc;color:var(--err)}.state.stale{background:#fbeedb;color:#a5601b}
+details{margin:10px 0;background:#f3efe4;border-radius:10px;padding:8px 14px}
+details summary{cursor:pointer;font-weight:700;color:var(--ink2)}
+.note-field{display:block;margin-top:12px}
+.note-field span{display:block;font-weight:700;font-size:15px;margin-bottom:4px}
+.note-field textarea,.idgrid input,.bilan textarea{width:100%;font:inherit;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);resize:vertical}
+.note-field textarea:focus,.idgrid input:focus,.bilan textarea:focus{outline:none;border-color:var(--accent)}
+.note-field textarea{min-height:46px}
+.bilan textarea{min-height:120px}
+
+/* cellule de code */
+.cell{margin-top:12px;border-radius:12px;overflow:hidden;background:var(--code-bg);box-shadow:0 1px 0 #0000000d}
+.cell.demo{margin:14px 0 20px}
+.cellbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#2a2d40;flex-wrap:wrap}
+.cellbar .tag{font-size:12px;color:#a9a6c4;margin-right:auto;font-family:var(--mono)}
+.btn{font:inherit;font-size:15px;font-weight:700;border:0;border-radius:9px;padding:6px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.run{background:#4cc27f;color:#0d2a1a}
+.btn.run:hover{background:#62d593}
+.btn.ghost{background:transparent;color:#cfcce4;border:1px solid #4a4d66;font-weight:400}
+.btn.ghost:hover{background:#ffffff10}
+.btn.from{background:#33375a;color:#dfe4ff;border:1px solid #6f84ff;font-weight:400}
+.btn.from:hover{background:#3d4270}
+.btn.stop{background:#e8664f;color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn[hidden]{display:none}
+.editor{position:relative;background:var(--code-bg)}
+.editor pre,.editor textarea{margin:0;padding:14px 16px;font:14.5px/1.6 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;tab-size:4;-moz-tab-size:4;letter-spacing:0;border:0;width:100%;min-height:72px}
+.editor pre{color:var(--code-ink);pointer-events:none}
+.editor textarea{position:absolute;inset:0;height:100%;color:transparent;background:transparent;caret-color:#fff;resize:none;overflow:hidden;outline:none}
+.editor textarea::placeholder{color:#7d7a99}
+.editor textarea::selection{background:#4f5bd566;color:transparent}
+.editor:focus-within{box-shadow:inset 0 0 0 2px #6f84ff}
+.tk-kw{color:#ff9ac1;font-weight:600}.tk-bi{color:#7cc7ff}.tk-str{color:#b6e3a1}.tk-num{color:#ffc27a}.tk-com{color:#8e8bab;font-style:italic}
+.out{margin:0;padding:12px 16px;background:#11131d;color:#e9e7f2;font:14px/1.45 var(--mono);white-space:pre;overflow:auto;max-height:460px;border-top:1px solid #33364a}
+.out:empty{display:none}
+.out .k-err{color:#ff9d8a}.out .k-sys{color:#8e8bab;font-style:italic}.out .k-in{color:#7cc7ff;font-weight:600}
+.out .hint{display:block;max-width:760px;margin-top:8px;padding:8px 12px;border-radius:8px;background:#2b2230;color:#ffd7a8;font-family:var(--sans);font-size:15px;white-space:normal}
+.out .hint code{background:#4a3a52;color:#ffffff;font-weight:600}
+.out .hint b{color:#ffffff}
+.out input.inp{font:inherit;color:#7cc7ff;background:#1f2235;border:1px solid #6f84ff;border-radius:6px;padding:1px 8px;min-width:14ch;outline:none}
+
+/* cas à tester & essais */
+.essais{display:flex;flex-direction:column;gap:10px;padding:14px 16px;background:#ebe6d9;border-top:1px solid #33364a}
+.essais[hidden]{display:none}
+.tests{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14.5px;color:var(--ink2)}
+.tests b{color:var(--ink);margin-right:4px}
+.chip{font-family:var(--mono);font-size:13.5px;background:#fff;border:1.5px dashed #b9b19c;border-radius:99px;padding:1px 10px;color:var(--ink2)}
+.chip.ok{border-style:solid;border-color:var(--ok);background:#dff1e6;color:var(--ok);font-weight:600}
+.chip.ok::before{content:"✓ "}
+.histlabel{font-size:14px;font-weight:700;color:var(--ink2)}
+.hist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.hist:empty{display:none}
+.essai{background:#11131d;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px #0003}
+.essai .eh{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px;color:#a9a6c4;background:#2a2d40;padding:3px 4px 3px 10px}
+.essai .eh .bad{color:#ff9d8a;font-weight:700}
+.essai .eh .good{color:#7fdca3;font-weight:700}
+.essai .eh button{border:0;background:none;color:#a9a6c4;cursor:pointer;font-size:13px;padding:2px 7px;border-radius:5px}
+.essai .eh button:hover{background:#ffffff14;color:#fff}
+.essai pre{margin:0;padding:8px 10px;color:#e9e7f2;font:12.5px/1.35 var(--mono);white-space:pre;overflow:auto;max-height:220px}
+.essai .k-in{color:#7cc7ff;font-weight:600}.essai .k-err{color:#ff9d8a}
+
+/* prédictions */
+.quiz{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.qi{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.qq{font-weight:700;font-size:15.5px}
+.qcode{display:inline-block;min-width:230px;max-width:100%;margin:4px 0 0;font:14px/1.45 var(--mono);background:#ece7da;border-radius:7px;padding:6px 10px;white-space:pre;overflow-x:auto}
+.qctx{font-size:14px;color:var(--ink2);margin-right:8px}
+.qbtns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.qbtns button{font:600 14px var(--mono);white-space:pre;border:1.5px solid var(--line);background:#faf8f2;border-radius:8px;padding:4px 12px;cursor:pointer;color:var(--ink)}
+.qbtns button:hover{border-color:var(--ink2)}
+.qbtns button.sel.good{background:#dff1e6;border-color:var(--ok);color:var(--ok)}
+.qbtns button.sel.bad{background:#f7e0dc;border-color:var(--err);color:var(--err)}
+.qfb{grid-column:1/-1;font-size:15px}
+.qfb:empty{display:none}
+.qfb.good{color:var(--ok)}.qfb.bad{color:var(--err)}
+.qscore{font-weight:700;color:var(--ink2);font-size:15px;margin-top:2px}
+
+.bigbtn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:12px;padding:12px 22px;cursor:pointer;background:var(--accent);color:#fff}
+.bigbtn:hover{filter:brightness(1.1)}
+.bigbtn.bonusbtn{background:var(--bonus)}
+.smallbtn{font:inherit;font-size:15px;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:7px 14px;cursor:pointer;color:var(--ink)}
+.smallbtn:hover{border-color:var(--ink2)}
+.msg{font-weight:700;margin-left:10px}
+.msg.bad{color:var(--err)}
+
+/* accueil / rendu */
+.idgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.idgrid label span{display:block;font-weight:700;font-size:15px;margin-bottom:4px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:4px 0 10px 44px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:grid;place-items:center;font-size:15px}
+kbd{font-family:var(--mono);font-size:.85em;background:#fff;border:1px solid #cfc8b6;border-bottom-width:2px;border-radius:5px;padding:0 6px}
+.check{list-style:none;padding:0;margin:0}
+.check li{padding:6px 0 6px 32px;position:relative;border-bottom:1px solid var(--line)}
+.check li:last-child{border:0}
+.check li::before{content:"○";position:absolute;left:6px;color:var(--ink2);font-weight:700}
+.check li.yes::before{content:"✓";color:var(--ok)}
+.check li.opt::before{content:"★";color:var(--bonus)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.next{margin-top:30px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+footer{color:var(--ink2);font-size:14px;text-align:center;padding:20px 16px 40px}
+@media (max-width:600px){body{font-size:16px}article.ex,.box{padding:14px}h2{font-size:24px}.qi{grid-template-columns:1fr}.qbtns{justify-content:flex-start}}
+
+@media print{
+  header.top nav,.cellbar,.bigbtn,.smallbtn,.next,.pystatus,footer,.noprint,.headart,.essai .eh button{display:none!important}
+  header.top{background:#fff;color:#000;padding:0}
+  section.panel{display:block!important}
+  body{background:#fff}
+  .out,.essai pre{max-height:none;background:#f3f3f3;color:#000}
+  .editor textarea{display:none}
+  .editor pre{color:#000;background:#f7f7f7}
+  .cell{background:#f7f7f7}
+  article.ex{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <svg class="headart" viewBox="0 0 150 150" aria-hidden="true">
+      <g fill="none" stroke="#f6f3ec" stroke-width="1.3">
+        <rect x="69" y="16" width="12" height="12"/>
+        <rect x="57" y="40" width="12" height="12"/><rect x="69" y="40" width="12" height="12"/><rect x="81" y="40" width="12" height="12"/>
+        <rect x="45" y="64" width="12" height="12"/><rect x="57" y="64" width="12" height="12"/><rect x="69" y="64" width="12" height="12"/><rect x="81" y="64" width="12" height="12"/><rect x="93" y="64" width="12" height="12"/>
+        <rect x="33" y="88" width="12" height="12"/><rect x="45" y="88" width="12" height="12"/><rect x="57" y="88" width="12" height="12"/><rect x="69" y="88" width="12" height="12"/><rect x="81" y="88" width="12" height="12"/><rect x="93" y="88" width="12" height="12"/><rect x="105" y="88" width="12" height="12"/>
+        <path d="M128 22 a14 14 0 1 1 -1 50" /><path d="M122 66 l6 7 l-8 3"/>
+      </g>
+      <g fill="#f6f3ec" font-family="monospace" font-size="11"><text x="30" y="130">for i in range(4):</text></g>
+    </svg>
+    <div class="kicker">SNT · Seconde · ESAAT Roubaix · Séance 3</div>
+    <h1>Répéter pour créer</h1>
+    <div class="pystatus" id="pystatus" role="status"><i></i><span>Python : chargement…</span></div>
+    <nav class="tabs" role="tablist" aria-label="Parties de la séance">
+      <button role="tab" data-tab="accueil" aria-selected="true">Commencer</button>
+      <button role="tab" data-tab="for" aria-selected="false">1 · La boucle for <span class="badge" id="b-1">0/0</span></button>
+      <button role="tab" data-tab="figures" aria-selected="false">2 · Figures <span class="badge" id="b-2">0/0</span></button>
+      <button role="tab" data-tab="while" aria-selected="false">3 · while &amp; projets <span class="badge" id="b-3">0/0</span></button>
+      <button role="tab" data-tab="defis" aria-selected="false" class="bonus">★ Défis <span class="badge" id="b-d">0/0</span></button>
+      <button role="tab" data-tab="rendu" aria-selected="false">Rendre mon travail</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ===================================================== ACCUEIL -->
+<section class="panel active" id="p-accueil" role="tabpanel">
+  <h2>Bonjour !</h2>
+  <p class="lead">Aujourd'hui, ton programme apprend à <b>répéter</b> : un nombre de fois connu avec <code>for</code>, ou <em>tant que</em> c'est nécessaire avec <code>while</code>. Et on s'en sert pour <b>dessiner des figures avec des caractères</b>. Tout se passe dans cette page, et à la fin tu télécharges un PDF qui rassemble ton travail.</p>
+
+  <div class="box">
+    <h3>Qui es-tu ?</h3>
+    <p style="margin-top:0;color:var(--ink2)">Ces informations apparaîtront sur ton PDF.</p>
+    <div class="idgrid">
+      <label><span>Nom</span><input id="id-nom" autocomplete="family-name"></label>
+      <label><span>Prénom</span><input id="id-prenom" autocomplete="given-name"></label>
+      <label><span>Classe</span><input id="id-classe" placeholder="ex. 2nde 3"></label>
+    </div>
+  </div>
+
+  <div class="box info">
+    <h3>Le programme du jour</h3>
+    <ol class="steps">
+      <li><b>Partie 1 : la boucle <code>for</code></b> <em>(obligatoire)</em> : répéter un nombre de fois connu, <code>range</code>.</li>
+      <li><b>Partie 2 : dessiner des figures</b> <em>(obligatoire)</em> : carré, escalier, triangle inversé, pyramide.</li>
+      <li><b>Partie 3 : la boucle <code>while</code> et les mini-projets</b> <em>(obligatoire)</em> : le videur, le nombre mystère complet, le générateur de motifs.</li>
+      <li><b>★ Défis</b> : pour aller plus loin si tu as fini.</li>
+      <li><b>Rendre mon travail</b> : tu télécharges le PDF et tu le déposes sur l'ENT (ou tu l'envoies par mail à ton professeur).</li>
+    </ol>
+  </div>
+
+  <div class="box">
+    <h3>Comment ça marche ?</h3>
+    <p>Dans chaque <b>cellule de code</b> (les cadres sombres), tu écris du Python, puis tu cliques sur <b>▶ Exécuter</b> ou tu appuies sur <kbd>Maj</kbd> + <kbd>Entrée</kbd>.</p>
+    <p>Quand ton programme pose une question avec <code>input()</code>, une <b>case bleue</b> apparaît sous le code : tape ta réponse puis appuie sur <kbd>Entrée</kbd>.</p>
+    <p>Sous certains exercices, des <b>cas à tester</b> se cochent tout seuls quand tu les essaies, et tes <b>derniers essais</b> sont gardés : ils apparaîtront dans ton PDF.</p>
+    <p><b>Boucle infinie ?</b> Pas de panique : la page arrête toute seule un programme qui tourne trop longtemps. Tu peux aussi cliquer sur <b>■ Arrêter</b>.</p>
+    <p>La touche <kbd>Tab</kbd> décale ta ligne de 4 espaces. Après une ligne qui finit par <code>:</code>, la touche <kbd>Entrée</kbd> décale toute seule la ligne suivante.</p>
+    <p><b>Repères :</b> <span class="lvl g">Découverte</span> pour tout le monde · <span class="lvl o">Application</span> · <span class="lvl r">Défi</span> pour aller plus loin.</p>
+    <p style="margin-bottom:0">C'est le même Python que dans Basthon. Tu peux te tromper autant que tu veux : rien ne peut casser.</p>
+  </div>
+
+  <div class="box warn">
+    <h3>Ton travail est enregistré… dans ce navigateur</h3>
+    <p>Tout ce que tu écris est sauvegardé automatiquement <b>sur cet ordinateur et dans ce navigateur</b>. Si tu changes d'appareil, emporte une sauvegarde :</p>
+    <div class="row">
+      <button class="smallbtn" id="btn-export">⬇ Télécharger ma sauvegarde</button>
+      <label class="smallbtn" style="display:inline-block">⬆ Reprendre une sauvegarde<input type="file" id="btn-import" accept=".json,application/json" hidden></label>
+      <span class="msg" id="save-msg"></span>
+    </div>
+  </div>
+
+  <div class="next"><button class="bigbtn" data-goto="for">C'est parti : partie 1 →</button></div>
+</section>
+
+<!-- ===================================================== PARTIE 1 -->
+<section class="panel" id="p-for" role="tabpanel">
+  <h2>1. La boucle <code>for</code> : répéter un nombre de fois connu</h2>
+  <p>Dans Scratch : <b>« répéter 10 fois »</b>. En Python :</p>
+<pre class="ex-code">for i in range(10):
+    instructions à répéter     # décalées de 4 espaces, comme pour le if</pre>
+  <p>La variable <code>i</code> prend successivement les valeurs 0, 1, 2, …, 9 (10 valeurs, <b>en commençant à 0</b>).<br><code>range(1, 6)</code> donne 1, 2, 3, 4, 5 (le dernier nombre est <b>exclu</b>).</p>
+  <div class="cell demo" data-id="demo-tour"><script type="text/plain" class="src">
+for i in range(5):
+    print("Tour numéro", i)
+</script></div>
+
+  <div class="box art">
+    <h3>Prédis avant d'exécuter</h3>
+    <p style="margin:0;color:var(--ink2);font-size:15px">Réfléchis avant de cliquer : ton premier choix est noté dans le PDF. Tu peux ensuite vérifier en recopiant le code dans une cellule.</p>
+    <div class="quiz" data-quiz="q1"></div>
+  </div>
+
+  <article class="ex" data-ex="e1.1" data-part="1" data-level="g" data-req="1" data-title="Exercice 1.1 — Je dessine, donc je suis">
+    <div class="exhead"><h3><span class="lvl g">Découverte</span>Exercice 1.1 — Je dessine, donc je suis</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Affiche 8 fois la phrase « Je dessine, donc je suis. »</p></div>
+    <div class="cell" data-id="e1.1"></div>
+  </article>
+
+  <article class="ex" data-ex="e1.2" data-part="1" data-level="g" data-req="1" data-title="Exercice 1.2 — Table de multiplication">
+    <div class="exhead"><h3><span class="lvl g">Découverte</span>Exercice 1.2 — Table de multiplication</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Le programme demande un nombre et affiche sa table de multiplication de 1 à 10, sous la forme <code>7 x 3 = 21</code>.</p></div>
+    <details><summary>Coup de pouce</summary><p><code>range(1, 11)</code> donne 1, 2, …, 10. Dans <code>print</code>, sépare les morceaux par des virgules : <code>print(n, "x", i, "=", n * i)</code>.</p></details>
+    <div class="cell" data-id="e1.2" data-tests="7|9"></div>
+  </article>
+
+  <div class="next"><button class="bigbtn" data-goto="figures">Partie 2 : les figures →</button></div>
+</section>
+
+<!-- ===================================================== PARTIE 2 -->
+<section class="panel" id="p-figures" role="tabpanel">
+  <h2>2. Dessiner des figures</h2>
+  <p>L'astuce : à chaque tour de boucle, on affiche <b>une ligne</b> de la figure. On utilise la répétition de texte <code>"*" * n</code>, qui colle <code>n</code> fois le caractère.</p>
+  <div class="cell demo" data-id="demo-rect"><script type="text/plain" class="src">
+# Un rectangle de 4 lignes et 10 colonnes
+for ligne in range(4):
+    print("#" * 10)
+</script></div>
+
+  <article class="ex" data-ex="e2.1" data-part="2" data-level="g" data-req="1" data-title="Exercice 2.1 — Le carré">
+    <div class="exhead"><h3><span class="lvl g">Découverte</span>Exercice 2.1 — Le carré</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Le programme demande une taille <code>n</code> et dessine un carré plein de <code>n</code> lignes de <code>n</code> caractères <code>"[]"</code>.</p></div>
+    <div class="cell" data-id="e2.1" data-tests="3|5|1"></div>
+  </article>
+
+  <article class="ex" data-ex="e2.2" data-part="2" data-level="g" data-req="1" data-title="Exercice 2.2 — L'escalier">
+    <div class="exhead"><h3><span class="lvl g">Découverte</span>Exercice 2.2 — L'escalier</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Dessine ce triangle pour <code>n = 5</code>. Observe : à la ligne numéro <code>i</code>, combien y a-t-il d'étoiles ?</p>
+<pre class="ex-code">*
+**
+***
+****
+*****</pre></div>
+    <details><summary>Coup de pouce</summary><p>Utilise <code>for i in range(1, n + 1):</code> pour que <code>i</code> aille de 1 à n.</p></details>
+    <div class="cell" data-id="e2.2" data-body="n = 5&#10;&#10;# écris ton programme ici"></div>
+    <label class="note-field"><span>À la ligne numéro i, combien y a-t-il d'étoiles ?</span><textarea rows="1" data-note="e2.2-obs"></textarea></label>
+  </article>
+
+  <article class="ex" data-ex="e2.3" data-part="2" data-level="o" data-req="1" data-title="Exercice 2.3 — Le triangle inversé">
+    <div class="exhead"><h3><span class="lvl o">Application</span>Exercice 2.3 — Le triangle inversé</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Dessine ce triangle pour <code>n = 5</code> :</p>
+<pre class="ex-code">*****
+****
+***
+**
+*</pre></div>
+    <div class="cell" data-id="e2.3" data-body="n = 5&#10;&#10;# écris ton programme ici" data-from="e2.2"></div>
+  </article>
+
+  <article class="ex" data-ex="e2.4" data-part="2" data-level="o" data-req="1" data-title="Exercice 2.4 — La pyramide">
+    <div class="exhead"><h3><span class="lvl o">Application</span>Exercice 2.4 — La pyramide</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Pour <code>n = 4</code> :</p>
+<pre class="ex-code">   *
+  ***
+ *****
+*******</pre></div>
+    <details><summary>Coup de pouce</summary><p>À la ligne i (de 1 à n), il y a <code>n - i</code> espaces puis <code>2 * i - 1</code> étoiles. On colle les deux avec <code>+</code>.</p></details>
+    <div class="cell" data-id="e2.4" data-body="n = 4&#10;&#10;# écris ton programme ici"></div>
+  </article>
+
+  <div class="next"><button class="bigbtn" data-goto="while">Partie 3 : la boucle while →</button></div>
+</section>
+
+<!-- ===================================================== PARTIE 3 -->
+<section class="panel" id="p-while" role="tabpanel">
+  <h2>3. La boucle <code>while</code> : répéter <em>tant que</em></h2>
+  <p>Dans Scratch : <b>« répéter jusqu'à »</b>. En Python, on répète <b>tant que</b> la condition est vraie :</p>
+<pre class="ex-code">while condition:
+    instructions</pre>
+  <div class="box warn" style="padding:12px 16px">⚠️ Si la condition reste toujours vraie, la boucle ne s'arrête jamais : c'est une <b>boucle infinie</b>. Pas de panique : cette page arrête toute seule un programme qui tourne trop longtemps.</div>
+  <div class="cell demo" data-id="demo-decollage"><script type="text/plain" class="src">
+compteur = 10
+while compteur > 0:
+    print(compteur)
+    compteur = compteur - 1
+print("Décollage !")
+</script></div>
+  <div class="box art">
+    <label class="note-field" style="margin-top:0"><span>Expérience : dans l'exemple ci-dessus, supprime la ligne <code>compteur = compteur - 1</code> et exécute. Que se passe-t-il ? Pourquoi ?</span>
+      <textarea rows="2" data-note="oubli-compteur" placeholder="Le programme… parce que…"></textarea></label>
+  </div>
+
+  <div class="box art">
+    <h3>Prédis avant d'exécuter</h3>
+    <div class="quiz" data-quiz="q2"></div>
+  </div>
+
+  <article class="ex" data-ex="e3.1" data-part="3" data-level="g" data-req="1" data-title="Exercice 3.1 — Le videur">
+    <div class="exhead"><h3><span class="lvl g">Découverte</span>Exercice 3.1 — Le videur</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Le programme redemande le mot de passe <b>tant que</b> la réponse n'est pas <code>"design"</code>, puis affiche « Bienvenue ».</p></div>
+    <details><summary>Coup de pouce</summary><p>Pose la question une première fois <b>avant</b> la boucle, puis <code>while reponse != "design":</code> et, dans la boucle, repose la question.</p></details>
+    <div class="cell" data-id="e3.1" data-tests="design|chat/design|chat/Design/design" data-tests-exact></div>
+  </article>
+
+  <h2>4. Mini-projets 🎮🎨</h2>
+
+  <article class="ex" data-ex="pA" data-part="3" data-level="o" data-req="1" data-title="Projet A — Le nombre mystère (version complète)">
+    <div class="exhead"><h3><span class="lvl o">Application</span>Projet A — Le nombre mystère (version complète)</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>L'ordinateur choisit un nombre entre 1 et 100. Le joueur propose des nombres <b>jusqu'à trouver</b> ; à chaque essai le programme répond « plus grand » ou « plus petit ». À la fin, il affiche le nombre d'essais.</p></div>
+    <details><summary>Coup de pouce</summary><p>Il faut une variable <code>essais</code> qui commence à 0 et une variable <code>proposition</code> qui commence à 0 (une valeur impossible). La boucle : <code>while proposition != mystere:</code></p></details>
+    <div class="cell" data-id="pA" data-random></div>
+  </article>
+
+  <article class="ex" data-ex="pB" data-part="3" data-level="o" data-req="1" data-title="Projet B — Générateur de motifs">
+    <div class="exhead"><h3><span class="lvl o">Application</span>Projet B — Générateur de motifs</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Le programme demande un caractère, une taille et une forme (<code>carre</code>, <code>escalier</code> ou <code>pyramide</code>) et dessine la figure demandée. Tu réutilises tes exercices de la partie 2 avec des <code>if</code> / <code>elif</code> !</p></div>
+    <div class="cell" data-id="pB" data-tests="carre|escalier|pyramide"></div>
+  </article>
+
+  <div class="next"><button class="bigbtn bonusbtn" data-goto="defis">★ Les défis</button><button class="bigbtn" data-goto="rendu">Rendre mon travail →</button></div>
+</section>
+
+<!-- ===================================================== DÉFIS -->
+<section class="panel" id="p-defis" role="tabpanel">
+  <div class="box bonus"><b>★ Pour aller plus loin.</b> Ces défis ne sont pas obligatoires : fais-les si les parties 1 à 3 sont terminées. Tout ce que tu fais ici sera ajouté à ton PDF.</div>
+  <h2>5. Pour aller plus loin</h2>
+
+  <article class="ex" data-ex="d1" data-part="d" data-level="r" data-title="Défi 1 — Le cadre vide">
+    <div class="exhead"><h3><span class="lvl r">Défi</span>Défi 1 — Le cadre vide</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Dessine un carré dont seul le bord est tracé :</p>
+<pre class="ex-code">######
+#    #
+#    #
+######</pre></div>
+    <div class="cell" data-id="d1"></div>
+  </article>
+
+  <article class="ex" data-ex="d2" data-part="d" data-level="r" data-title="Défi 2 — Le damier">
+    <div class="exhead"><h3><span class="lvl r">Défi</span>Défi 2 — Le damier</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Dessine un damier de <code>n × n</code> cases en alternant <code>#</code> et <code>.</code>. Indice : une boucle dans une boucle, et <code>(ligne + colonne) % 2</code>.</p>
+<pre class="ex-code">#.#.#.
+.#.#.#
+#.#.#.</pre></div>
+    <details><summary>Coup de pouce</summary><p>Pour afficher sans aller à la ligne : <code>print("#", end="")</code>. Après chaque ligne : <code>print()</code>.</p></details>
+    <div class="cell" data-id="d2"></div>
+  </article>
+
+  <article class="ex" data-ex="d3" data-part="d" data-level="r" data-title="Défi 3 — Le sapin">
+    <div class="exhead"><h3><span class="lvl r">Défi</span>Défi 3 — Le sapin</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Une pyramide d'étoiles, puis un tronc <code>|||</code> centré de 2 lignes. Bonus : remplace au hasard certaines étoiles par des boules <code>o</code> (module <code>random</code>, déjà importé).</p></div>
+    <div class="cell" data-id="d3" data-random data-from="e2.4"></div>
+  </article>
+
+  <article class="ex" data-ex="d4" data-part="d" data-level="r" data-title="Défi 4 — Le losange">
+    <div class="exhead"><h3><span class="lvl r">Défi</span>Défi 4 — Le losange</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Une pyramide suivie d'une pyramide inversée.</p></div>
+    <div class="cell" data-id="d4" data-from="e2.4"></div>
+  </article>
+
+  <article class="ex" data-ex="d5" data-part="d" data-level="r" data-title="Défi 5 — Le nombre mystère, version difficile">
+    <div class="exhead"><h3><span class="lvl r">Défi</span>Défi 5 — Le nombre mystère, version difficile</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Le joueur n'a que 7 essais. Le programme annonce « Perdu ! » s'il les dépasse.</p></div>
+    <div class="cell" data-id="d5" data-random data-from="pA"></div>
+  </article>
+
+  <article class="ex" data-ex="d6" data-part="d" data-level="r" data-title="Défi 6 — Ta signature">
+    <div class="exhead"><h3><span class="lvl r">Défi</span>Défi 6 — Ta signature</h3><span class="state">à faire</span></div>
+    <div class="consigne"><p>Dessine ton initiale en grand (7 lignes) en utilisant une boucle et des conditions. Par exemple un <code>X</code> : l'étoile est sur la diagonale si <code>colonne == ligne</code> ou <code>colonne == n - 1 - ligne</code>.</p></div>
+    <div class="cell" data-id="d6" data-body="n = 7&#10;&#10;# écris ton programme ici"></div>
+  </article>
+
+  <div class="next"><button class="bigbtn" data-goto="rendu">Rendre mon travail →</button></div>
+</section>
+
+<!-- ===================================================== RENDU -->
+<section class="panel" id="p-rendu" role="tabpanel">
+  <h2>Rendre mon travail</h2>
+  <p class="lead">Vérifie la liste, écris ton bilan, puis télécharge ton PDF. Dépose-le ensuite sur l'ENT ou envoie-le à ton professeur.</p>
+
+  <div class="box">
+    <h3>Où en es-tu ?</h3>
+    <ul class="check" id="checklist"></ul>
+  </div>
+
+  <div class="box bilan">
+    <h3>Mon bilan</h3>
+    <label class="note-field" style="margin-top:0"><span>Ce que j'ai appris, ce qui m'a posé problème, une question pour mon professeur :</span>
+      <textarea rows="4" data-note="bilan"></textarea></label>
+  </div>
+
+  <div class="box info">
+    <div class="row">
+      <button class="bigbtn" id="btn-pdf">⬇ Télécharger mon PDF</button>
+      <span class="msg" id="pdf-msg"></span>
+    </div>
+    <p style="margin-bottom:0;color:var(--ink2);font-size:15px">Le PDF contient ton identité, un résumé, tes prédictions et tes réponses, puis chaque exercice avec ton code, les cas testés et tes derniers essais (donc tes figures).</p>
+  </div>
+
+  <details class="noprint" style="margin-top:40px"><summary>Tout effacer et recommencer</summary>
+    <p>Efface tout le travail enregistré dans ce navigateur (code, essais, réponses). Impossible de revenir en arrière.</p>
+    <button class="smallbtn" id="btn-reset" style="border-color:var(--err);color:var(--err)">Effacer tout mon travail</button>
+  </details>
+</section>
+</main>
+
+
+<footer>SNT · ESAAT Roubaix · Python exécuté dans le navigateur (Pyodide, comme Basthon)</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+"use strict";
+/* =========================================================== CONTENUS */
+const MAXHIST = 6;
+const QUIZ = {
+  q1: { title: "La boucle for et range", items: [
+    { q: "Quelles valeurs prend i ?", code: "for i in range(5):", opts: ["0 1 2 3 4", "1 2 3 4 5", "0 1 2 3 4 5"], ans: 0, why: "range(5) commence à 0 et s'arrête AVANT 5 : 5 valeurs, de 0 à 4." },
+    { q: "Quelles valeurs donne range(1, 6) ?", code: "for i in range(1, 6):", opts: ["1 2 3 4 5 6", "1 2 3 4 5", "0 1 2 3 4 5"], ans: 1, why: "Le dernier nombre (6) est exclu." },
+    { q: "Combien de fois « Bonjour » est-il affiché ?", code: 'for i in range(3):\n    print("Bonjour")\nprint("Bonjour")', opts: ["3", "4", "6"], ans: 1, why: "3 fois dans la boucle, puis 1 fois après : la dernière ligne n'est pas décalée, elle n'est pas répétée." },
+    { q: "Que vaut cette expression ?", code: '"*" * 4', opts: ['"****"', '"* 4"', "4"], ans: 0, why: "Multiplier un texte par un nombre le répète : 4 étoiles collées." },
+    { q: "Que vaut cette expression ?", code: '" " * 2 + "*" * 3', opts: ['"  ***"', '" * * *"', '"  *  *  *"'], ans: 0, why: "2 espaces puis 3 étoiles. C'est l'astuce de la pyramide : des espaces, puis des étoiles." },
+  ]},
+  q2: { title: "La boucle while", items: [
+    { q: "Combien de tours fait cette boucle ?", code: "n = 3\nwhile n > 0:\n    n = n - 1", opts: ["2", "3", "4"], ans: 1, why: "n vaut 3, puis 2, puis 1 : trois tours. Quand n vaut 0, la condition n > 0 est fausse." },
+    { q: "Que se passe-t-il ?", code: "n = 0\nwhile n < 5:\n    print(n)", opts: ["affiche 0 1 2 3 4", "affiche 0 cinq fois", "ne s'arrête jamais"], ans: 2, why: "n n'est jamais modifié : il vaut toujours 0, donc n < 5 reste vrai pour toujours. Boucle infinie !" },
+    { q: "Que se passe-t-il ?", code: "x = 10\nwhile x < 5:\n    print(x)", opts: ["affiche 10 une fois", "n'affiche rien", "ne s'arrête jamais"], ans: 1, why: "La condition est fausse dès le départ : Python n'entre jamais dans la boucle." },
+  ]},
+};
+
+/* =========================================================== ÉTAT & SAUVEGARDE */
+const KEY = "snt-esaat-boucles-seance3-v1";
+const blank = () => ({ id:{nom:"",prenom:"",classe:""}, cells:{}, notes:{}, quiz:{}, tab:"accueil" });
+let S = blank();
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(blank(), JSON.parse(raw)); } catch(e) {}
+let saveTimer = null, saveWarned = false;
+function save(now){
+  clearTimeout(saveTimer);
+  const doit = () => {
+    try { localStorage.setItem(KEY, JSON.stringify(S)); }
+    catch(e) { if (!saveWarned) { saveWarned = true; alert("Attention : la sauvegarde automatique est pleine. Supprime quelques essais (✕) et télécharge une sauvegarde depuis l'onglet « Commencer »."); } }
+  };
+  if (now) doit(); else saveTimer = setTimeout(doit, 300);
+}
+window.addEventListener("beforeunload", () => save(true));
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const slug = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "");
+const hhmm = iso => { try { return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); } catch(e) { return ""; } };
+
+/* =========================================================== ONGLETS */
+function showTab(name){
+  $$("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name));
+  $$("section.panel").forEach(p => p.classList.toggle("active", p.id === "p-" + name));
+  S.tab = name; save();
+  if (name === "rendu") renderChecklist();
+  requestAnimationFrame(() => $$("#p-" + name + " textarea[data-note]").forEach(autosize));
+  window.scrollTo(0, 0);
+}
+$$("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+$$("[data-goto]").forEach(b => b.addEventListener("click", () => showTab(b.dataset.goto)));
+
+/* =========================================================== IDENTITÉ & NOTES */
+for (const k of ["nom","prenom","classe"]) {
+  const el = $("#id-" + k); el.value = S.id[k] || "";
+  el.addEventListener("input", () => { S.id[k] = el.value; save(); });
+}
+function autosize(t){ if (!t.offsetParent) return; t.style.height = "auto"; t.style.height = (t.scrollHeight + 4) + "px"; }
+$$("textarea[data-note]").forEach(t => {
+  t.value = S.notes[t.dataset.note] || "";
+  t.addEventListener("input", () => { S.notes[t.dataset.note] = t.value; save(); autosize(t); });
+  requestAnimationFrame(() => autosize(t));
+});
+
+/* =========================================================== PRÉDICTIONS */
+function renderQuiz(el){
+  const id = el.dataset.quiz, q = QUIZ[id], ans = S.quiz[id] || (S.quiz[id] = {});
+  el.innerHTML = "";
+  q.items.forEach((it, i) => {
+    const row = document.createElement("div"); row.className = "qi";
+    const a = ans[i];
+    const good = a && (a.v === it.ans);
+    row.innerHTML = `<div class="qexpr"><div class="qq">${i + 1}. ${esc(it.q)}</div>${it.code ? `<pre class="qcode">${esc(it.code)}</pre>` : ""}</div>
+      <div class="qbtns">${it.opts.map((o, k) => `<button data-v="${k}">${esc(o)}</button>`).join("")}</div>
+      <div class="qfb ${a ? (good ? "good" : "bad") : ""}">${a ? (good ? "✓ Exact. " : "✗ Non. ") + esc(it.why) : ""}</div>`;
+    row.querySelectorAll("button").forEach(b => {
+      const v = +b.dataset.v;
+      if (a && a.v === v) b.classList.add("sel", good ? "good" : "bad");
+      b.addEventListener("click", () => {
+        if (!ans[i]) ans[i] = { v, first: v === it.ans }; else ans[i].v = v;
+        save(); renderQuiz(el);
+      });
+    });
+    el.appendChild(row);
+  });
+  const st = quizStats(id);
+  const sc = document.createElement("div"); sc.className = "qscore";
+  sc.textContent = st.answered ? `${st.correct} / ${st.total} justes · au premier essai : ${st.first} / ${st.total}` : "";
+  el.appendChild(sc);
+}
+function quizStats(id){
+  const q = QUIZ[id], ans = S.quiz[id] || {};
+  let answered = 0, correct = 0, first = 0;
+  q.items.forEach((it, i) => { const a = ans[i]; if (!a) return; answered++; if (a.v === it.ans) correct++; if (a.first) first++; });
+  return { total: q.items.length, answered, correct, first };
+}
+$$(".quiz").forEach(renderQuiz);
+
+/* =========================================================== COLORATION */
+const KW = new Set("and as assert async await break class continue def del elif else except False finally for from global if import in is lambda None nonlocal not or pass raise return True try while with yield".split(" "));
+const BI = new Set("print input int float str type len range round abs min max random randint choice bool list lower upper strip".split(" "));
+function highlight(src){
+  const re = /(#[^\n]*)|([rRbBfFuU]{0,2}(?:"""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$)|"(?:\\.|[^"\\\n])*"?|'(?:\\.|[^'\\\n])*'?))|(\b\d+(?:\.\d+)?\b)|([A-Za-z_À-ÿ][\wÀ-ÿ]*)/g;
+  let out = "", last = 0, m;
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(last, m.index));
+    const t = esc(m[0]);
+    if (m[1]) out += '<span class="tk-com">' + t + "</span>";
+    else if (m[2]) out += '<span class="tk-str">' + t + "</span>";
+    else if (m[3]) out += '<span class="tk-num">' + t + "</span>";
+    else if (KW.has(m[4])) out += '<span class="tk-kw">' + t + "</span>";
+    else if (BI.has(m[4])) out += '<span class="tk-bi">' + t + "</span>";
+    else out += t;
+    last = re.lastIndex;
+    if (m[0].length === 0) re.lastIndex++;
+  }
+  return out + esc(src.slice(last)) + "\n";
+}
+
+/* =========================================================== input() → await */
+function skipString(s, i){
+  const q = s[i], triple = s.substr(i,3) === q.repeat(3);
+  let j = i + (triple ? 3 : 1);
+  while (j < s.length) {
+    if (s[j] === "\\") { j += 2; continue; }
+    if (triple) { if (s.substr(j,3) === q.repeat(3)) return j + 3; }
+    else { if (s[j] === q) return j + 1; if (s[j] === "\n") return j; }
+    j++;
+  }
+  return s.length;
+}
+function matchParen(s, i){
+  let d = 0, j = i;
+  while (j < s.length) {
+    const c = s[j];
+    if (c === '"' || c === "'") { j = skipString(s, j); continue; }
+    if (c === "#") { const k = s.indexOf("\n", j); j = k < 0 ? s.length : k; continue; }
+    if (c === "(") d++;
+    else if (c === ")") { d--; if (d === 0) return j; }
+    j++;
+  }
+  return -1;
+}
+function transformInput(s){
+  const isId = c => !!c && /[\wÀ-ÿ]/.test(c);
+  let out = "", i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === "#") { const k = s.indexOf("\n", i); const e = k < 0 ? s.length : k; out += s.slice(i, e); i = e; continue; }
+    if (c === '"' || c === "'") { const e = skipString(s, i); out += s.slice(i, e); i = e; continue; }
+    if (s.startsWith("input", i) && !isId(s[i-1]) && s[i-1] !== "." && !isId(s[i+5])) {
+      let j = i + 5; while (s[j] === " " || s[j] === "\t") j++;
+      if (s[j] === "(") {
+        const k = matchParen(s, j);
+        if (k > 0) { out += "(await __inp(" + transformInput(s.slice(j+1, k)) + "))"; i = k + 1; continue; }
+      }
+    }
+    if (isId(c)) { let j = i; while (isId(s[j])) j++; out += s.slice(i, j); i = j; continue; }
+    out += c; i++;
+  }
+  return out;
+}
+
+/* =========================================================== PYTHON (Pyodide) */
+const PYO = "https://cdn.jsdelivr.net/npm/pyodide@0.26.4/";
+let pyPromise = null, py = null, running = null;
+function setPyStatus(kind, text){ const el = $("#pystatus"); el.className = "pystatus " + kind; el.querySelector("span").textContent = text; }
+function ensurePy(){
+  if (pyPromise) return pyPromise;
+  pyPromise = new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = PYO + "pyodide.js";
+    s.onload = async () => {
+      try {
+        py = await loadPyodide({ indexURL: PYO });
+        py.setStdout({ batched: t => running && running.write(t + "\n", "out") });
+        py.setStderr({ batched: t => running && running.write(t + "\n", "err") });
+        setPyStatus("ready", "Python est prêt");
+        resolve(py);
+      } catch (e) { console.error(e); fail(e); }
+    };
+    s.onerror = fail;
+    function fail(e){
+      setPyStatus("fail", "Python indisponible : vérifie ta connexion internet puis recharge la page");
+      pyPromise = null; reject(e);
+    }
+    document.head.appendChild(s);
+  });
+  return pyPromise;
+}
+/* garde-fou : un programme qui tourne trop longtemps (boucle infinie) est arrêté */
+const GUARD = `import sys as _sys, builtins as _bi
+_nprint = [0]
+_nlig = [0]
+def print(*args, **kwargs):
+    _nprint[0] += 1
+    if _nprint[0] > 10000:
+        raise RuntimeError("trop d'affichages (plus de 10 000 print) : ta boucle ne s'arrete peut-etre jamais")
+    _bi.print(*args, **kwargs)
+def _garde(frame, event, arg):
+    if event == "line":
+        _nlig[0] += 1
+        if _nlig[0] > 300000:
+            raise RuntimeError("programme arrete : il tournait trop longtemps (boucle infinie ?)")
+    return _garde
+_sys.settrace(_garde)`;
+
+/* =========================================================== AIDE AUX ERREURS */
+const NEED_NUM = "<code>input()</code> renvoie toujours du <b>texte</b>. Pour comparer ou calculer avec un nombre, transforme la réponse : <code>int(input(...))</code> (ou <code>float(input(...))</code> pour un nombre à virgule).";
+const HINTS = [
+  [/trop d'affichages|tournait trop longtemps/, "Ta boucle ne s'arrête jamais : c'est une <b>boucle infinie</b>. Dans un <code>while</code>, vérifie que la variable de la condition <b>change</b> à chaque tour (par exemple <code>compteur = compteur - 1</code>), sinon la condition reste toujours vraie."],
+  [/'str' object cannot be interpreted as an integer/, "<code>range(...)</code> veut un <b>nombre</b>, pas du texte. La réponse d'<code>input()</code> est du texte : écris <code>n = int(input(...))</code>."],
+  [/can't multiply sequence by non-int of type 'str'/, "On ne peut pas multiplier un texte par un texte. La taille vient d'<code>input()</code> ? Transforme-la en nombre : <code>n = int(input(...))</code>."],
+  [/can't multiply sequence by non-int of type 'float'/, "Pour répéter un texte, il faut un nombre <b>entier</b> : <code>\"*\" * 3</code> et pas <code>\"*\" * 2.5</code>. Utilise <code>//</code> au lieu de <code>/</code>, ou <code>int(...)</code>."],
+  [/'(int|float)' object is not iterable/, "Après <code>for i in</code>, il faut <code>range(...)</code> : écris <code>for i in range(10):</code> et pas <code>for i in 10:</code>."],
+  [/'float' object cannot be interpreted as an integer/, "<code>range(...)</code> veut des nombres <b>entiers</b>. Utilise <code>//</code> au lieu de <code>/</code>, ou <code>int(...)</code>."],
+  [/invalid literal for int\(\) with base 10: '([^']*)'/, m => /[.,]/.test(m[1]) ? "Tu as tapé un nombre à virgule (« " + esc(m[1]) + " ») alors que le programme attend un nombre <b>entier</b> (<code>int</code>). Pour accepter les virgules, utilise <code>float(input(...))</code> et tape un <b>point</b> : 12.5" : "Le programme attendait un <b>nombre entier</b>, mais tu as tapé « " + esc(m[1]) + " ». Relance et tape un nombre (sans lettres ni espaces)."],
+  [/could not convert string to float: '([^']*)'/, m => "Le programme attendait un nombre, mais tu as tapé « " + esc(m[1]) + " ». Attention : Python veut un <b>point</b> (12.5) et pas une virgule (12,5)."],
+  [/not all arguments converted during string formatting/, NEED_NUM],
+  [/not supported between instances of 'str' and '(int|float)'|not supported between instances of '(int|float)' and 'str'/, NEED_NUM],
+  [/can only concatenate str \(not "(int|float)"\) to str/, "On ne peut pas coller (+) un texte et un nombre. Sépare les morceaux par des virgules dans <code>print</code>, ou transforme le nombre en texte avec <code>str(...)</code>."],
+  [/unsupported operand type\(s\) for .*'str'/, NEED_NUM],
+  [/NameError: name 'random' is not defined/, "Il manque <code>import random</code> en haut du programme."],
+  [/NameError: name '(randint|choice)' is not defined/, m => "On écrit <code>random." + esc(m[1]) + "(...)</code>, avec <code>random.</code> devant (et <code>import random</code> en haut)."],
+  [/NameError: name '(true|false|TRUE|FALSE)' is not defined/, "En Python, on écrit <code>True</code> et <code>False</code> avec une majuscule."],
+  [/'await' outside (async )?function|asynchronous comprehension outside/, "Dans cette page, <code>input()</code> ne fonctionne pas à l'intérieur d'une fonction <code>def</code>. Écris ton programme sans <code>def</code>, ou utilise Basthon pour cet essai."],
+  [/missing (\d+) required positional argument/, "Il manque des valeurs entre les parenthèses. Par exemple : <code>random.randint(1, 10)</code> attend deux nombres."],
+  [/takes (\d+) positional arguments? but (\d+) (were|was) given/, m => "Tu donnes <b>" + m[2] + "</b> valeurs alors qu'il en faut <b>" + m[1] + "</b>."],
+  [/empty range (for|in) randrange|randrange\(\) arg/, "<code>random.randint(a, b)</code> veut un <code>a</code> plus petit que (ou égal à) <code>b</code>."],
+  [/NameError: name '([^']+)' is not defined/, m => "Python ne connaît pas <code>" + esc(m[1]) + "</code>. Faute de frappe ? Variable pas encore créée ? Ou bien c'était un texte et il manque les guillemets : <code>\"" + esc(m[1]) + "\"</code> ?"],
+  [/Maybe you meant '==' or ':=' instead of '='|cannot assign to/, "Pour comparer deux valeurs, on écrit <code>==</code> (deux signes égal). Un seul <code>=</code> sert à ranger une valeur dans une variable."],
+  [/expected ':'/, "Il manque les deux-points <code>:</code> à la fin de la ligne <code>for</code>, <code>while</code>, <code>if</code>, <code>elif</code> ou <code>else</code>."],
+  [/expected an indented block/, "Après une ligne qui finit par <code>:</code>, les instructions doivent être décalées de 4 espaces (touche Tab)."],
+  [/unexpected indent/, "Cette ligne est décalée alors qu'elle ne devrait pas l'être. Retire les espaces au début de la ligne."],
+  [/unindent does not match/, "Les décalages ne sont pas alignés : les lignes d'un même bloc doivent avoir exactement le même nombre d'espaces."],
+  [/unterminated string literal|EOL while scanning/, "Un texte n'est pas fermé : il manque un guillemet <code>\"</code>."],
+  [/was never closed|unexpected EOF/, "Une parenthèse ou un crochet ouvert n'a pas été refermé. Astuce : <code>int(input(\"...\"))</code> se termine par <b>deux</b> parenthèses."],
+  [/unmatched '\)'/, "Il y a une parenthèse fermante <code>)</code> en trop."],
+  [/invalid character/, "Un caractère n'est pas reconnu par Python (guillemet typographique « » ou ’ ? Utilise les guillemets droits \" du clavier)."],
+  [/invalid decimal literal/, "Un nombre est collé à des lettres, ou tu as écrit un nombre à virgule avec une <b>virgule</b> : Python veut un <b>point</b> (29.7)."],
+  [/ZeroDivisionError/, "Division par zéro : c'est impossible, même pour un ordinateur !"],
+  [/IndentationError/, "Problème de décalage (indentation) : vérifie les espaces en début de ligne."],
+  [/SyntaxError/, "Erreur d'écriture : vérifie les deux-points <code>:</code>, les parenthèses, les guillemets, et <code>==</code> pour comparer."],
+];
+/* erreurs fréquentes repérées directement dans le code */
+function lintCode(code){
+  const src = code.split("\n").map(l => l.replace(/#.*$/, "")).join("\n");
+  const err = [], warn = [];
+  if (/^\s*else\s+if\b/m.test(src)) err.push("En Python, « sinon si » s'écrit en un seul mot : <code>elif condition:</code> (et pas <code>else if</code>).");
+  else if (/^\s*else\s*[^:\s]/m.test(src)) err.push("<code>else</code> n'a jamais de condition : on écrit <code>else:</code> tout seul. Pour une nouvelle condition, utilise <code>elif condition:</code>.");
+  if (/^\s*(If|Elif|Else|IF|ELSE|ELIF)\b/m.test(src)) err.push("Les mots-clés s'écrivent en minuscules : <code>if</code>, <code>elif</code>, <code>else</code>.");
+  if (/=<|=>/.test(src)) err.push("On écrit <code>&lt;=</code> et <code>&gt;=</code> (le signe = en second).");
+  if (/(==|!=)\s*("[^"\n]*"|'[^'\n]*'|-?\d+(\.\d+)?)\s+(or|and)\s+("|'|-?\d)/.test(src))
+    warn.push("Attention : <code>couleur == \"rouge\" or \"orange\"</code> ne fait pas ce que tu crois (c'est toujours vrai !). Répète la comparaison : <code>couleur == \"rouge\" or couleur == \"orange\"</code>.");
+  return { err, warn };
+}
+function formatError(msg, original){
+  const lines = String(msg).split("\n");
+  const orig = original.split("\n");
+  const start = lines.findIndex(l => l.includes('File "<exec>"'));
+  const rel = start >= 0 ? lines.slice(start) : lines.filter(l => l.trim()).slice(-1);
+  const res = []; let lastLine = 0, dropCaret = false, skipping = false;
+  for (const l of rel) {
+    const m = l.match(/File "<exec>", line (\d+)/);
+    if (m) { skipping = false; lastLine = +m[1]; res.push("Ligne " + lastLine + " :"); continue; }
+    if (/^\s*File "/.test(l)) { skipping = true; continue; }
+    if (skipping && /^\s/.test(l)) continue;
+    skipping = false;
+    if (l.includes("__inp")) { res.push("    " + (orig[lastLine-1] || "").trim()); dropCaret = true; continue; }
+    if (/^\s*[\^~]+\s*$/.test(l) && dropCaret) { dropCaret = false; continue; }
+    res.push(l);
+  }
+  while (res.length && !res[res.length-1].trim()) res.pop();
+  const txt = res.join("\n");
+  let hint = null;
+  for (const [re, h] of HINTS) { const mm = txt.match(re); if (mm) { hint = typeof h === "function" ? h(mm) : h; break; } }
+  return { txt, hint };
+}
+
+/* =========================================================== CELLULES */
+const CELLS = {};
+let stopRequested = false;
+const PLACEHOLDER = /^#.*ici\s*$/;
+const exLabel = id => { const a = $(`article.ex[data-ex="${id}"]`); return a ? a.dataset.title.split(" — ")[0].replace("Exercice ", "ex. ").replace("Projet ", "projet ") : id; };
+/* « l'exercice 2.2 », « le projet A » ; avec de : « de l'exercice 2.2 », « du projet A » */
+const exRef = (id, de) => { const l = exLabel(id); const ex = l.startsWith("ex. "); const nom = ex ? "exercice " + l.slice(4) : l; return ex ? (de ? "de l'" : "l'") + nom : (de ? "du " : "le ") + nom; };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+function starterFor(div){
+  const src = div.querySelector("script.src");
+  if (src) return src.textContent.replace(/^\s*\n/, "").replace(/\s+$/, "") + "\n";
+  let s = div.dataset.pre ? div.dataset.pre + "\n" : "";
+  if (div.dataset.random !== undefined) s += "import random\n\n";
+  return s + (div.dataset.body || "# écris ton programme ici") + "\n";
+}
+const hasOut = st => !!(st && st.out && st.out.some(([k, t]) => (k === "out" || k === "in") && t.trim()));
+const testMatch = (seq, inputs) => { const pool = (inputs || []).map(v => String(v).trim()); return seq.every(v => { const k = pool.indexOf(v); if (k < 0) return false; pool.splice(k, 1); return true; }); };
+const testLabel = t => t.split("/").join(" → ");
+const exactMatch = (seq, inputs) => (inputs || []).length === seq.length && seq.every((v, i) => String(inputs[i]).trim() === v);
+const testsOf = c => c.tests.map(t => ({ t: testLabel(t), ok: c.st.hist.some(h => h.status === "ok" && (c.exact ? exactMatch : testMatch)(t.split("/"), h.inputs)) }));
+
+function makeCell(div){
+  const id = div.dataset.id;
+  const starter = starterFor(div);
+  const st = S.cells[id] || (S.cells[id] = { code: starter, out: [], status: null, stale: false, runs: 0, hist: [] });
+  if (!st.hist) st.hist = [];
+  const isDemo = div.classList.contains("demo");
+  const tests = (div.dataset.tests || "").split("|").filter(Boolean);
+  const from = div.dataset.from;
+  div.innerHTML = `
+    <div class="cellbar">
+      <span class="tag">${isDemo ? "exemple · à exécuter et modifier" : "Maj + Entrée pour exécuter"}</span>
+      ${from ? `<button class="btn from" title="Recopier ici ton programme de cet exercice">⤵ Reprendre ${esc(exRef(from))}</button>` : ""}
+      <button class="btn ghost reset" title="Revenir au code de départ">↺ Réinitialiser</button>
+      <button class="btn stop" hidden>■ Arrêter</button>
+      <button class="btn run">▶ Exécuter</button>
+    </div>
+    <div class="editor"><pre aria-hidden="true"></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Code Python"></textarea></div>
+    <div class="out" aria-live="polite"></div>
+    ${isDemo ? "" : `<div class="essais" hidden><div class="tests"></div><div class="histlabel"></div><div class="hist"></div></div>`}`;
+  const ta = div.querySelector(".editor textarea"), pre = div.querySelector(".editor pre"), out = div.querySelector(".out");
+  ta.placeholder = "# Écris ton programme ici";
+  ta.value = st.code;
+  const paint = () => { pre.innerHTML = highlight(ta.value); };
+  paint();
+  const c = { id, div, ta, out, st, starter, isDemo, tests, exact: div.dataset.testsExact !== undefined, inputs: [],
+    runBtn: div.querySelector(".run"), stopBtn: div.querySelector(".stop"),
+    outLen: 0,
+    write(text, kind){
+      if (this.outLen > 30000) return;
+      this.outLen += text.length;
+      if (this.outLen > 30000) { text = "\n… (affichage coupé : trop de texte)\n"; kind = "sys"; }
+      const last = st.out[st.out.length-1];
+      if (last && last[0] === kind) last[1] += text; else st.out.push([kind, text]);
+      const field = out.querySelector("input.inp");
+      const sp = document.createElement("span"); sp.className = "k-" + kind; sp.textContent = text;
+      if (field) out.insertBefore(sp, field); else out.appendChild(sp);
+      out.scrollTop = out.scrollHeight;
+    },
+    hint(html){ st.out.push(["hint", html]); const d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + html; out.appendChild(d); },
+    clear(){ st.out = []; out.innerHTML = ""; this.outLen = 0; },
+    renderOut(){ out.innerHTML = ""; for (const [k, t] of st.out) { if (k === "hint") { const d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + t; out.appendChild(d); } else { const sp = document.createElement("span"); sp.className = "k-" + k; sp.textContent = t; out.appendChild(sp); } } },
+  };
+  c.renderOut();
+  ta.addEventListener("input", () => {
+    paint(); st.code = ta.value;
+    if (st.runs > 0) st.stale = true;
+    updateState(c); save();
+  });
+  ta.addEventListener("keydown", e => onKey(e, c));
+  c.runBtn.addEventListener("click", () => runCell(c));
+  c.stopBtn.addEventListener("click", () => { stopRequested = true; if (c.pendingReject) c.pendingReject(new Error("stop")); });
+  div.querySelector(".reset").addEventListener("click", () => {
+    if (ta.value !== starter && !confirm("Revenir au code de départ ? Ton code actuel sera effacé (tes essais restent).")) return;
+    setCode(ta, starter); ta.focus();
+  });
+  if (from) div.querySelector(".from").addEventListener("click", () => takeFrom(c, from));
+  CELLS[id] = c;
+  renderEssais(c);
+  return c;
+}
+
+function segsHTML(segs){ return segs.map(([k, t]) => `<span class="k-${k}">${esc(t)}</span>`).join(""); }
+function renderEssais(c){
+  const zone = c.div.querySelector(".essais"); if (!zone) return;
+  const st = c.st;
+  zone.hidden = !c.tests.length && !st.hist.length;
+  const tb = zone.querySelector(".tests");
+  tb.hidden = !c.tests.length;
+  tb.innerHTML = c.tests.length ? "<b>Cas à tester :</b>" + testsOf(c).map(x => `<span class="chip${x.ok ? " ok" : ""}">${esc(x.t)}</span>`).join("") : "";
+  zone.querySelector(".histlabel").textContent = st.hist.length ? `Mes essais (les ${MAXHIST} derniers sont gardés pour le PDF)` : "";
+  const box = zone.querySelector(".hist"); box.innerHTML = "";
+  st.hist.forEach((h, i) => {
+    const el = document.createElement("div"); el.className = "essai";
+    const n = st.hist.length - i;
+    el.innerHTML = `<div class="eh"><span>essai ${n} · ${esc(hhmm(h.at))} · ${h.status === "ok" ? '<span class="good">✓</span>' : '<span class="bad">erreur</span>'}</span><button title="Supprimer cet essai">✕</button></div><pre>${segsHTML(h.segs)}</pre>`;
+    el.querySelector("button").addEventListener("click", () => { if (!confirm("Supprimer l'essai " + n + " ?")) return; st.hist.splice(i, 1); renderEssais(c); updateState(c); save(true); });
+    box.appendChild(el);
+  });
+}
+
+/* reprendre le code d'un autre exercice */
+function extractBody(code, starter){
+  const have = new Set((starter || "").split("\n").map(l => l.trim()).filter(l => l && !PLACEHOLDER.test(l)));
+  have.add("import random");
+  return code.split("\n").filter(l => !PLACEHOLDER.test(l.trim()) && !have.has(l.trim())).join("\n")
+    .replace(/\n{3,}/g, "\n\n").replace(/^\s*\n/, "").replace(/\s+$/, "");
+}
+function takeFrom(c, srcId){
+  const src = CELLS[srcId];
+  const body = src ? extractBody(src.st.code, c.starter) : "";
+  if (!body.trim()) { c.clear(); c.write(cap(exRef(srcId)) + " est encore vide : fais-le d'abord !\n", "sys"); return; }
+  if (c.ta.value !== c.starter && !confirm("Remplacer ton code actuel par ton programme " + exRef(srcId, true) + " ?")) return;
+  const lines = c.starter.replace(/\s+$/, "").split("\n");
+  const idx = lines.findIndex(l => PLACEHOLDER.test(l.trim()));
+  const ins = "# repris " + exRef(srcId, true) + " :\n" + body;
+  if (idx >= 0) lines.splice(idx, 1, ins); else lines.push(ins);
+  setCode(c.ta, lines.join("\n") + "\n");
+  c.clear(); c.write("Code " + exRef(srcId, true) + " recopié. À toi de le modifier !\n", "sys");
+}
+
+function setCode(ta, txt){
+  ta.focus(); ta.select();
+  let ok = false;
+  try { ok = document.execCommand("insertText", false, txt); } catch(e) {}
+  if (!ok || ta.value !== txt) { ta.value = txt; ta.dispatchEvent(new Event("input")); }
+}
+function insertAt(ta, text, start, end){
+  ta.setSelectionRange(start, end);
+  let ok = false;
+  try { ok = document.execCommand("insertText", false, text); } catch(e) {}
+  if (!ok) { ta.setRangeText(text, start, end, "end"); ta.dispatchEvent(new Event("input")); }
+}
+let escFlag = false;
+function onKey(e, c){
+  const ta = c.ta;
+  if (e.key === "Escape") { escFlag = true; return; }
+  if (e.key === "Enter" && (e.shiftKey || e.ctrlKey || e.metaKey)) { e.preventDefault(); runCell(c); return; }
+  const v = ta.value, s = ta.selectionStart, en = ta.selectionEnd;
+  const lineStart = v.lastIndexOf("\n", s - 1) + 1;
+  if (e.key === "Tab") {
+    if (escFlag) { escFlag = false; return; }
+    e.preventDefault();
+    const blockEnd = v.indexOf("\n", en); const be = blockEnd < 0 ? v.length : blockEnd;
+    if (s !== en && v.slice(s, en).includes("\n") || e.shiftKey) {
+      const block = v.slice(lineStart, be).split("\n");
+      const nb = block.map(l => e.shiftKey ? l.replace(/^ {1,4}/, "") : "    " + l).join("\n");
+      insertAt(ta, nb, lineStart, be);
+      ta.setSelectionRange(lineStart, lineStart + nb.length);
+    } else insertAt(ta, "    ", s, en);
+    return;
+  }
+  escFlag = false;
+  if (e.key === "Enter" && !e.altKey) {
+    e.preventDefault();
+    const line = v.slice(lineStart, s);
+    let ind = (line.match(/^[ \t]*/) || [""])[0];
+    if (/:\s*(#.*)?$/.test(line)) ind += "    ";
+    insertAt(ta, "\n" + ind, s, en);
+    return;
+  }
+  if (e.key === "Backspace" && s === en && s > lineStart) {
+    const before = v.slice(lineStart, s);
+    if (/^ +$/.test(before)) {
+      e.preventDefault();
+      const n = before.length % 4 || 4;
+      insertAt(ta, "", s - n, s);
+    }
+  }
+}
+
+function updateState(c){
+  const art = c.div.closest("article.ex"); if (!art) return;
+  const tag = art.querySelector(".state");
+  const st = c.st;
+  let cls = "", txt = "à faire";
+  if (st.runs > 0 && st.stale) { cls = "stale"; txt = "modifié, à ré-exécuter"; }
+  else if (st.status === "ok" && hasOut(st)) {
+    cls = "ok"; txt = "✓ testé";
+    if (c.tests.length) { const t = testsOf(c); txt += " · " + t.filter(x => x.ok).length + "/" + t.length + " cas"; }
+    else if (st.hist.length > 1) txt += " · " + st.hist.length + " essais";
+  }
+  else if (st.status === "ok") { cls = "stale"; txt = "exécuté, mais rien ne s'affiche"; }
+  else if (st.status === "err") { cls = "err"; txt = "erreur"; }
+  else if (st.status === "stop") { cls = "stale"; txt = "arrêté"; }
+  else if (st.code.trim() && st.code.trim() !== c.starter.trim()) { cls = "stale"; txt = "pas encore exécuté"; }
+  tag.className = "state " + cls; tag.textContent = txt;
+  updateBadges();
+}
+
+function setRunningUI(on, c){
+  $$(".cell .run").forEach(b => b.disabled = on);
+  if (c) { c.stopBtn.hidden = !on; c.runBtn.textContent = on ? "… en cours" : "▶ Exécuter"; }
+}
+
+function askInput(c, prompt){
+  return new Promise((resolve, reject) => {
+    if (prompt) c.write(prompt, "out");
+    const field = document.createElement("input");
+    field.className = "inp"; field.type = "text"; field.setAttribute("aria-label", prompt || "Réponse");
+    field.placeholder = "ta réponse + Entrée";
+    c.out.appendChild(field);
+    c.out.scrollTop = c.out.scrollHeight;
+    field.focus({ preventScroll: false });
+    c.pendingReject = reject;
+    field.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const val = field.value;
+        field.remove(); c.pendingReject = null;
+        c.inputs.push(val);
+        c.write(val + "\n", "in");
+        resolve(val);
+      }
+    });
+  });
+}
+
+async function runCell(c){
+  if (running) return;
+  let p;
+  c.runBtn.disabled = true;
+  try { p = await ensurePy(); }
+  catch(e) { c.runBtn.disabled = false; c.clear(); c.write("Python n'a pas pu se charger. Vérifie ta connexion internet, puis recharge la page.\n", "err"); return; }
+  running = c; stopRequested = false; c.inputs = [];
+  setRunningUI(true, c);
+  c.clear();
+  await new Promise(r => setTimeout(r, 20));
+  const code = c.ta.value;
+  let tcode = code;
+  try { tcode = transformInput(code); } catch(e) {}
+  const lint = lintCode(code);
+  const ns = p.toPy({});
+  ns.set("__inp", pr => askInput(c, pr === undefined ? "" : String(pr)));
+  let status = "ok";
+  try { p.runPython(GUARD, { globals: ns, filename: "<garde>" }); } catch(e) { console.error(e); }
+  try {
+    await p.runPythonAsync(tcode, { globals: ns, filename: "<exec>" });
+  } catch (e) {
+    if (stopRequested) { status = "stop"; c.write("\n■ Programme arrêté.\n", "sys"); }
+    else {
+      status = "err";
+      const f = formatError(e && e.message ? e.message : String(e), code);
+      c.write(f.txt + "\n", "err");
+      const h = lint.err[0] || f.hint;
+      if (h) c.hint(h);
+    }
+  } finally {
+    try { p.runPython("import sys\nsys.settrace(None)"); } catch(e) {}
+    try { ns.destroy(); } catch(e) {}
+    $$("input.inp", c.out).forEach(x => x.remove());
+  }
+  if (status === "ok" && !hasOut(c.st)) c.write("(Le programme s'est exécuté, mais n'a rien affiché. As-tu oublié print(...) ?)\n", "sys");
+  if (status !== "stop") lint.warn.forEach(w => c.hint(w));
+  c.st.status = status; c.st.stale = false; c.st.runs = (c.st.runs || 0) + 1;
+  c.st.at = new Date().toISOString();
+  if (!c.isDemo && status !== "stop") {
+    let budget = 3000;
+    const segs = [];
+    for (const [k, t] of c.st.out) {
+      if (k === "hint" || k === "sys" || budget <= 0) continue;
+      const tt = t.length > budget ? t.slice(0, budget) + "…\n" : t; budget -= t.length;
+      segs.push([k, tt]);
+    }
+    if (segs.length) {
+      const e = { at: c.st.at, status, segs, inputs: c.inputs.slice() };
+      const prev = c.st.hist[0];
+      if (prev && prev.status === status && JSON.stringify(prev.segs) === JSON.stringify(segs)) prev.at = e.at;
+      else c.st.hist.unshift(e);
+      c.st.hist = c.st.hist.slice(0, MAXHIST);
+    }
+  }
+  running = null; setRunningUI(false, c);
+  renderEssais(c); updateState(c); save();
+}
+
+/* =========================================================== PROGRESSION */
+function exercises(part){ return $$(`article.ex[data-part="${part}"]`); }
+function exDone(art){ const c = CELLS[art.dataset.ex]; return !!(c && c.st.status === "ok" && !c.st.stale && hasOut(c.st) && c.st.code.trim() !== c.starter.trim()); }
+function exTouched(art){ const c = CELLS[art.dataset.ex]; return !!(c && ((c.st.runs > 0) || (c.st.code.trim() && c.st.code.trim() !== c.starter.trim()) || c.st.hist.length)); }
+function testsTotals(arts){
+  let ok = 0, all = 0;
+  for (const a of arts) { const c = CELLS[a.dataset.ex]; if (!c || !c.tests.length) continue; const t = testsOf(c); all += t.length; ok += t.filter(x => x.ok).length; }
+  return { ok, all };
+}
+function updateBadges(){
+  for (const p of ["1","2","3","d"]) {
+    const ex = exercises(p);
+    $("#b-" + p).textContent = ex.filter(exDone).length + "/" + ex.length;
+  }
+}
+const PARTS = [["1", "Partie 1 (la boucle for)"], ["2", "Partie 2 (les figures)"], ["3", "Partie 3 (while et mini-projets)"]];
+function renderChecklist(){
+  const ul = $("#checklist"); const items = [];
+  const idOk = S.id.nom.trim() && S.id.prenom.trim();
+  items.push([idOk ? "yes" : "", idOk ? `Identité : <b>${esc(S.id.prenom)} ${esc(S.id.nom)}</b>${S.id.classe ? " · " + esc(S.id.classe) : ""}` : "Identité : remplis ton nom et ton prénom dans l'onglet « Commencer »"]);
+  for (const [p, name] of PARTS) {
+    const req = exercises(p).filter(a => a.dataset.req), ok = req.filter(exDone);
+    items.push([ok.length === req.length ? "yes" : "", `${name} : <b>${ok.length} / ${req.length}</b> exercices testés sans erreur` + (ok.length < req.length ? " (manquants : " + req.filter(a => !exDone(a)).map(a => a.dataset.title.split(" — ")[0].replace("Exercice ", "")).join(", ") + ")" : "")]);
+  }
+  const tt = testsTotals([...exercises("1"), ...exercises("2"), ...exercises("3")]);
+  items.push([tt.ok === tt.all ? "yes" : "", `Cas testés : <b>${tt.ok} / ${tt.all}</b>` + (tt.ok < tt.all ? " (teste chaque cas proposé sous les exercices : c'est comme ça qu'on trouve les erreurs)" : "")]);
+  const qs = Object.keys(QUIZ).map(quizStats);
+  const qa = qs.reduce((n, s) => n + s.answered, 0), qt = qs.reduce((n, s) => n + s.total, 0), qc = qs.reduce((n, s) => n + s.correct, 0);
+  items.push([qa === qt ? "yes" : "", qa === qt ? `Prédictions : <b>${qc} / ${qt}</b> justes` : `Prédictions « Prédis avant d'exécuter » : ${qa} / ${qt} répondues (parties 1 et 3)`]);
+  const nExp = (S.notes["oubli-compteur"] || "").trim();
+  items.push([nExp ? "yes" : "", nExp ? "Expérience de la boucle infinie : écrite" : "Expérience de la boucle infinie (début de la partie 3) : pas encore écrite"]);
+  const dDone = exercises("d").filter(exDone).length;
+  if (dDone) items.push(["opt", `Défis réussis : <b>${dDone} / ${exercises("d").length}</b>`]);
+  const bil = (S.notes.bilan || "").trim();
+  items.push([bil ? "yes" : "", bil ? "Bilan : écrit" : "Bilan : à écrire ci-dessous"]);
+  ul.innerHTML = items.map(([c, t]) => `<li class="${c}">${t}</li>`).join("");
+}
+$("textarea[data-note=bilan]").addEventListener("input", () => { if (S.tab === "rendu") renderChecklist(); });
+
+/* =========================================================== PDF */
+function pdfSafe(s){
+  return String(s ?? "")
+    .replace(/\t/g, "    ")
+    .replace(/[‘’‛]/g, "'").replace(/[“”]/g, '"')
+    .replace(/[–—]/g, "-").replace(/…/g, "...")
+    .replace(/→/g, "->").replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/×/g, "x")
+    .replace(/œ/g, "oe").replace(/Œ/g, "OE").replace(/[✓✔]/g, "OK").replace(/[✗✘✕]/g, "X").replace(/★/g, "*")
+    .replace(/[  ]/g, " ")
+    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, "").replace(/[️‍]/g, "")
+    .replace(/[^\x00-\xFF]/g, "?");
+}
+function compactCode(code){
+  return code.split("\n").filter(l => !PLACEHOLDER.test(l.trim())).join("\n").replace(/\n{3,}/g, "\n\n").replace(/^\s*\n/, "").replace(/\s+$/, "");
+}
+function makePDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const M = 16, W = 210 - 2 * M, BOTTOM = 297 - 16;
+  let y = M;
+  const need = h => { if (y + h > BOTTOM) { doc.addPage(); y = M; } };
+  const pt = s => s * 0.3528;
+  function text(t, o = {}){
+    const size = o.size || 10.5, lh = pt(size) * (o.lh || 1.4), ind = o.indent || 0;
+    doc.setFont(o.font || "helvetica", o.style || "normal"); doc.setFontSize(size);
+    doc.setTextColor(...(o.color || [29, 27, 22]));
+    const lines = doc.splitTextToSize(pdfSafe(t), (o.width || W) - ind);
+    for (const l of lines) { need(lh); doc.text(l, (o.x || M) + ind, y + lh * 0.75); y += lh; }
+    y += o.after ?? 1.2;
+  }
+  function code(t, o = {}){
+    const size = o.size || 8.6, lh = pt(size) * 1.32, cw = pt(size) * 0.6, per = Math.floor((W - 7) / cw);
+    const bg = o.bg || [242, 239, 231], fg = o.fg || [25, 25, 35];
+    doc.setFont("courier", "normal"); doc.setFontSize(size);
+    let lines = pdfSafe(t).replace(/\s+$/, "").split("\n");
+    if (o.max && lines.length > o.max) lines = lines.slice(0, o.max).concat(["... (" + (lines.length - o.max) + " lignes de plus)"]);
+    const chunks = [];
+    for (const l of lines) { if (!l.length) chunks.push(""); for (let i = 0; i < l.length; i += per) chunks.push(l.slice(i, i + per)); }
+    need(lh + 3 + (o.keep ? Math.min(chunks.length, 8) * lh : 0));
+    doc.setFillColor(...bg); doc.rect(M, y, W, 1.6, "F"); y += 1.6;
+    for (const ch of chunks) {
+      need(lh);
+      doc.setFillColor(...bg); doc.rect(M, y, W, lh + 0.05, "F");
+      doc.setTextColor(...fg); doc.text(ch, M + 3.5, y + lh * 0.76); y += lh;
+    }
+    doc.setFillColor(...bg); doc.rect(M, y, W, 1.6, "F"); y += 1.6 + (o.after ?? 2.5);
+  }
+  function rule(c = [220, 214, 200]){ need(3); doc.setDrawColor(...c); doc.setLineWidth(0.3); doc.line(M, y + 1, M + W, y + 1); y += 3.5; }
+  function heading(t, color = [37, 70, 214]){ need(16); y += 3; text(t, { size: 16, style: "bold", color, after: 1 }); rule(color); }
+
+  const fullName = (S.id.prenom.trim() + " " + S.id.nom.trim()).trim() || "Élève";
+  const now = new Date();
+  const N = k => (S.notes[k] || "").trim();
+
+  // En-tête
+  doc.setFillColor(29, 27, 22); doc.rect(0, 0, 210, 34, "F");
+  doc.setTextColor(246, 243, 236); doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+  doc.text(pdfSafe("SNT · SECONDE · ESAAT ROUBAIX · SÉANCE 3"), M, 12);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(20);
+  doc.text(pdfSafe("Répéter pour créer"), M, 22);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+  doc.text(pdfSafe("Les boucles for et while - mon travail"), M, 29);
+  y = 44;
+  text("Élève : " + fullName + (S.id.classe.trim() ? "    Classe : " + S.id.classe.trim() : ""), { size: 12, style: "bold" });
+  text("Document généré le " + now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }), { size: 9.5, color: [91, 86, 72], after: 4 });
+
+  // Résumé
+  const ex1 = exercises("1"), ex2 = exercises("2"), ex3 = exercises("3"), exD = exercises("d");
+  const tt = testsTotals([...ex1, ...ex2, ...ex3]);
+  const qs = Object.keys(QUIZ).map(quizStats);
+  const qt = qs.reduce((n, s) => n + s.total, 0), qc = qs.reduce((n, s) => n + s.correct, 0), qf = qs.reduce((n, s) => n + s.first, 0), qa = qs.reduce((n, s) => n + s.answered, 0);
+  const sum = [
+    ["Partie 1 - La boucle for", ex1.filter(exDone).length + " / " + ex1.length + " exercices testés sans erreur"],
+    ["Partie 2 - Les figures", ex2.filter(exDone).length + " / " + ex2.length + " exercices testés sans erreur"],
+    ["Partie 3 - while et projets", ex3.filter(exDone).length + " / " + ex3.length + " exercices testés sans erreur"],
+    ["Défis", exD.filter(exDone).length + " / " + exD.length],
+    ["Cas testés", tt.ok + " / " + tt.all],
+    ["Prédictions", qa ? qc + " / " + qt + " justes (" + qf + " au premier essai)" : "non faites"],
+  ];
+  doc.setFillColor(230, 234, 252); need(sum.length * 6.2 + 6); doc.roundedRect(M, y, W, sum.length * 6.2 + 4, 2, 2, "F"); y += 3;
+  for (const [k, v] of sum) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(60, 60, 70); doc.text(pdfSafe(k), M + 4, y + 4.3);
+    doc.setFont("helvetica", "bold"); doc.setTextColor(29, 27, 22); doc.text(pdfSafe(v).slice(0, 70), M + 66, y + 4.3);
+    y += 6.2;
+  }
+  y += 5;
+
+  // Prédictions
+  if (qa) {
+    heading("Mes prédictions", [29, 27, 22]);
+    for (const [id, q] of Object.entries(QUIZ)) {
+      text(q.title, { size: 10.5, style: "bold", after: 0.8 });
+      const ans = S.quiz[id] || {};
+      q.items.forEach((it, i) => {
+        const a = ans[i];
+        const codeLines = it.code ? it.code.split("\n") : [];
+        need(6 + codeLines.length * 4.2 + 5);
+        text((i + 1) + ". " + it.q, { size: 9.5, after: 0.3 });
+        doc.setFont("courier", "normal"); doc.setFontSize(9); doc.setTextColor(29, 27, 22);
+        for (const l of codeLines) { doc.text(pdfSafe(l), M + 6, y + 3.2); y += 4.2; }
+        let r, col;
+        if (!a) { r = "pas répondu"; col = [140, 134, 120]; }
+        else { const good = a.v === it.ans; r = "Ma réponse : " + it.opts[a.v] + (good ? "  (juste" + (a.first ? ")" : ", au 2e essai)") : "  (faux : la bonne réponse est " + it.opts[it.ans] + ")"); col = good ? (a.first ? [47, 143, 91] : [165, 96, 27]) : [200, 64, 47]; }
+        text(r, { size: 9.5, style: "bold", color: col, indent: 6, after: 1.8 });
+      });
+      y += 1.5;
+    }
+  }
+
+  // Réponses aux questions hors exercices
+  const free = $$("textarea[data-note]").filter(t => !t.closest("article.ex") && t.dataset.note !== "bilan" && N(t.dataset.note));
+  if (free.length) {
+    heading("Mes réponses", [29, 27, 22]);
+    free.forEach(t => {
+      text(t.closest("label").querySelector("span").innerText, { size: 10, style: "bold", after: 0.5 });
+      text(N(t.dataset.note), { size: 10.5, indent: 3, after: 3 });
+    });
+  }
+
+  function exBlock(art){
+    const c = CELLS[art.dataset.ex], st = c.st;
+    const lvl = { g: "Découverte", o: "Application", r: "Défi" }[art.dataset.level];
+    need(26);
+    text(art.dataset.title, { size: 12, style: "bold", after: 0.3 });
+    let status;
+    if (!exTouched(art)) status = "Non fait";
+    else if (st.runs > 0 && st.stale) status = "Code modifié après le dernier essai";
+    else if (st.status === "ok" && hasOut(st)) status = "Testé sans erreur";
+    else if (st.status === "ok") status = "Exécuté, mais rien ne s'affiche";
+    else if (st.status === "err") status = "Dernier essai avec une erreur";
+    else if (st.status === "stop") status = "Exécution arrêtée";
+    else status = "Code écrit mais jamais exécuté";
+    const col = status === "Testé sans erreur" ? [47, 143, 91] : status === "Non fait" ? [140, 134, 120] : [200, 64, 47];
+    text(lvl + " · " + status, { size: 9.5, style: "bold", color: col, after: 1.2 });
+    const cons = art.querySelector(".consigne").cloneNode(true);
+    const modeles = [...cons.querySelectorAll("pre")].map(p => { const t = p.textContent; p.remove(); return t; });
+    const consigne = cons.textContent.replace(/\s+/g, " ").trim();
+    text(consigne.length > 480 ? consigne.slice(0, 477) + "..." : consigne, { size: 9, color: [91, 86, 72], after: modeles.length ? 0.8 : 2 });
+    modeles.forEach(m => { text("Figure attendue :", { size: 8.5, color: [91, 86, 72], after: 0.3 }); code(m, { size: 8, after: 1.8, keep: true }); });
+    if (c.tests.length) {
+      const t = testsOf(c);
+      text("Cas testés (" + t.filter(x => x.ok).length + " / " + t.length + ") : " + t.map(x => "« " + x.t + " » " + (x.ok ? "OK" : "non testé")).join("   "), { size: 9.5, style: "bold", color: t.every(x => x.ok) ? [47, 143, 91] : [165, 96, 27], after: 1.5 });
+    }
+    $$("textarea[data-note]", art).forEach(t => {
+      const v = N(t.dataset.note); if (!v) return;
+      text(t.closest("label").querySelector("span").innerText, { size: 9.5, style: "bold", after: 0.3 });
+      text(v, { size: 10, indent: 3, after: 1.5 });
+    });
+    if (!exTouched(art)) { y += 2; return; }
+    text("Mon code :", { size: 9.5, style: "bold", after: 0.8 });
+    code(st.code.trim() ? compactCode(st.code) : "(vide)");
+    const hist = st.hist.slice(0, 4).reverse();
+    if (hist.length) {
+      text(st.hist.length > 4 ? "Mes 4 derniers essais :" : "Mes essais :", { size: 9.5, style: "bold", after: 0.8 });
+      const total = st.hist.length;
+      hist.forEach((h, i) => {
+        const n = total - (hist.length - 1 - i);
+        const lab = "Essai " + n + " · " + hhmm(h.at) + (h.status === "ok" ? "" : " · erreur") + (h.inputs && h.inputs.length ? " · réponses tapées : " + h.inputs.map(v => "« " + v + " »").join(", ") : "");
+        text(lab, { size: 8.5, color: h.status === "ok" ? [91, 86, 72] : [200, 64, 47], after: 0.4 });
+        code(h.segs.map(([k, t]) => t).join(""), { max: 22, size: 8.2, bg: [33, 35, 50], fg: [233, 231, 242], after: 1.8, keep: true });
+      });
+    }
+    y += 2.5;
+  }
+
+  doc.addPage(); y = M;
+  heading("Partie 1 — La boucle for");
+  ex1.forEach(exBlock);
+  heading("Partie 2 — Dessiner des figures");
+  ex2.forEach(exBlock);
+  heading("Partie 3 — La boucle while et les mini-projets");
+  ex3.forEach(exBlock);
+  if (exD.some(exTouched)) {
+    heading("Défis — Pour aller plus loin", [180, 86, 29]);
+    exD.forEach(a => { if (exTouched(a)) exBlock(a); });
+    const notDone = exD.filter(a => !exTouched(a)).map(a => a.dataset.title.split(" — ")[0]);
+    if (notDone.length) text("Non faits : " + notDone.join(", "), { size: 9.5, color: [140, 134, 120] });
+  }
+
+  heading("Mon bilan");
+  text(N("bilan") || "(pas de bilan écrit)", { size: 10.5, style: N("bilan") ? "normal" : "italic" });
+
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(140, 134, 120);
+    doc.text(pdfSafe(fullName + (S.id.classe ? " · " + S.id.classe : "") + " · SNT · Séance 3 · Les boucles"), M, 297 - 8);
+    doc.text("page " + i + " / " + pages, 210 - M, 297 - 8, { align: "right" });
+  }
+  doc.save("SNT_Boucles_" + (slug(S.id.nom) || "eleve") + "_" + (slug(S.id.prenom) || "") + ".pdf");
+}
+$("#btn-pdf").addEventListener("click", () => {
+  const msg = $("#pdf-msg");
+  if (!S.id.nom.trim() || !S.id.prenom.trim()) {
+    msg.className = "msg bad"; msg.textContent = "Écris d'abord ton nom et ton prénom (onglet « Commencer »).";
+    return;
+  }
+  if (!window.jspdf) {
+    msg.className = "msg bad"; msg.textContent = "Le module PDF n'a pas pu se charger : la fenêtre d'impression va s'ouvrir, choisis « Enregistrer au format PDF ».";
+    setTimeout(() => window.print(), 600); return;
+  }
+  msg.className = "msg"; msg.style.color = "var(--ink2)"; msg.textContent = "Création du PDF…";
+  setTimeout(() => {
+    try { makePDF(); msg.style.color = "var(--ok)"; msg.textContent = "✓ PDF téléchargé. Dépose-le sur l'ENT !"; }
+    catch (e) { console.error(e); msg.className = "msg bad"; msg.style.color = ""; msg.textContent = "Erreur pendant la création du PDF : " + e.message; }
+  }, 30);
+});
+
+/* =========================================================== SAUVEGARDE FICHIER */
+$("#btn-export").addEventListener("click", () => {
+  save(true);
+  const blob = new Blob([JSON.stringify(S)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sauvegarde_SNT_Boucles_" + (slug(S.id.nom) || "eleve") + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$("#btn-import").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    if (!data || !data.cells || !data.id) throw new Error("format");
+    if (!confirm("Remplacer le travail actuel de ce navigateur par cette sauvegarde ?")) return;
+    S = Object.assign(blank(), data); save(true); location.reload();
+  } catch (err) { $("#save-msg").className = "msg bad"; $("#save-msg").textContent = "Ce fichier n'est pas une sauvegarde valide."; }
+});
+$("#btn-reset").addEventListener("click", () => {
+  if (!confirm("Effacer TOUT ton travail (code, essais, réponses) ? C'est définitif.")) return;
+  try { localStorage.removeItem(KEY); } catch(e) {}
+  S = blank(); location.reload();
+});
+
+/* =========================================================== DÉMARRAGE */
+$$(".cell").forEach(makeCell);
+Object.values(CELLS).forEach(updateState);
+updateBadges();
+if (S.tab && $("#p-" + S.tab)) showTab(S.tab);
+ensurePy().catch(() => {});
+</script>
+</body>
+</html>
